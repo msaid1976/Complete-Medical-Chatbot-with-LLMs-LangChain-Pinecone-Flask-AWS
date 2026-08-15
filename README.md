@@ -117,7 +117,7 @@ Then visit [http://127.0.0.1:8080](http://127.0.0.1:8080).
 
 ## Deployment flow
 
-On every push to `main`, GitHub Actions performs these steps:
+When you manually start the workflow from the **Actions** tab, GitHub Actions performs these steps:
 
 1. Builds the Docker image from the source code.
 2. Authenticates with Amazon ECR.
@@ -126,6 +126,8 @@ On every push to `main`, GitHub Actions performs these steps:
 5. Pulls and starts the application container on port `8080`.
 
 For a multi-container or multi-instance deployment, use a persistent shared store such as Redis for conversation history instead of the current in-memory store.
+
+> The workflow is manual-only (`workflow_dispatch`) so ordinary code and documentation pushes do not create failed deployment checks while the EC2 self-hosted runner is offline.
 
 ## AWS CI/CD deployment with GitHub Actions
 
