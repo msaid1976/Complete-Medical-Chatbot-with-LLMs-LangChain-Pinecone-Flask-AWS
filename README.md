@@ -131,7 +131,7 @@ Use a persistent shared store such as Redis for conversation history when runnin
 
 ## Author
 
-**Mohamed Mohamed Said Aly**Agentic AI Engineer · Applied AI Engineer · LLM Systems Engineer
+**Mohamed Mohamed Said Aly** Agentic AI Engineer · Applied AI Engineer · LLM Systems Engineer
 
 - [AI Portfolio](https://mohamedsaid-portfolio.vercel.app)
 - [GitHub](https://github.com/msaid1976)
