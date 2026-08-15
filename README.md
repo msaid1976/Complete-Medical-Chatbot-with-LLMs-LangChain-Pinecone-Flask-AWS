@@ -115,6 +115,18 @@ Then visit [http://127.0.0.1:8080](http://127.0.0.1:8080).
 - Hugging Face sentence-transformer embeddings
 - HTML, CSS, and vanilla JavaScript
 
+## Deployment flow
+
+On every push to `main`, GitHub Actions performs these steps:
+
+1. Builds the Docker image from the source code.
+2. Authenticates with Amazon ECR.
+3. Pushes the tagged image to the ECR repository.
+4. Runs the deployment job on the EC2 self-hosted runner.
+5. Pulls and starts the application container on port `8080`.
+
+For a multi-container or multi-instance deployment, use a persistent shared store such as Redis for conversation history instead of the current in-memory store.
+
 ## AWS CI/CD deployment with GitHub Actions
 
 The repository includes a GitHub Actions workflow at `.github/workflows/cicd.yaml`. It builds a Docker image, pushes it to Amazon ECR, and deploys it to an EC2 machine configured as a self-hosted GitHub Actions runner.
@@ -190,18 +202,6 @@ In the repository, go to **Settings → Secrets and variables → Actions** and 
 - `FLASK_SECRET_KEY`
 
 > The current chatbot uses Groq, so configure `GROQ_API_KEY` rather than `OPENAI_API_KEY` for the application container.
-
-### Deployment flow
-
-On every push to `main`, GitHub Actions performs these steps:
-
-1. Builds the Docker image from the source code.
-2. Authenticates with Amazon ECR.
-3. Pushes the tagged image to the ECR repository.
-4. Runs the deployment job on the EC2 self-hosted runner.
-5. Pulls and starts the application container on port `8080`.
-
-For a multi-container or multi-instance deployment, use a persistent shared store such as Redis for conversation history instead of the current in-memory store.
 
 ## Author
 
