@@ -65,6 +65,9 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 
+# Local project screenshots and design references
+Images/
+
 # Scrapy stuff:
 .scrapy
 
