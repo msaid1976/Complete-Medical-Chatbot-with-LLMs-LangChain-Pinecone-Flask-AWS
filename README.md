@@ -154,7 +154,7 @@ For production, replace broad managed policies with a least-privilege IAM policy
 Create an ECR repository to store the Docker image. Save its repository URI; for example:
 
 ```text
-533016149171.dkr.ecr.us-east-1.amazonaws.com/medicalbot
+- Save the URL : 533016149171.dkr.ecr.us-east-1.amazonaws.com/medicalbot
 ```
 
 Use the repository name portion (for example, `medicalbot`) as the value for the `ECR_REPO` GitHub secret.
