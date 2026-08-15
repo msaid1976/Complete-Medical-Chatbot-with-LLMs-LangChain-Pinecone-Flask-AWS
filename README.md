@@ -2,6 +2,10 @@
 
 A patient-friendly medical information chatbot built with Flask, LangChain, Groq, Pinecone, and Hugging Face embeddings. It uses retrieval-augmented generation (RAG) to answer questions from the indexed medical knowledge base and presents responses in a clear, structured chat interface.
 
+## Live demo
+
+Try the application: [Medical Chatbot on Render](https://complete-medical-chatbot-with-llms-o0uy.onrender.com)
+
 > **Medical notice:** This application is for educational and general-information purposes only. It does not diagnose conditions, replace a qualified healthcare provider, or provide emergency care.
 
 ## Features
