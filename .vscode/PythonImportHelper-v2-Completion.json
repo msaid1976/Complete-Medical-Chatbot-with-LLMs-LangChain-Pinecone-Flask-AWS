@@ -45,18 +45,34 @@
     },
     {
         "label": "PyPDFLoader",
-        "importPath": "langchain.document_loaders",
-        "description": "langchain.document_loaders",
+        "importPath": "langchain_community.document_loaders",
+        "description": "langchain_community.document_loaders",
         "isExtraImport": true,
-        "detail": "langchain.document_loaders",
+        "detail": "langchain_community.document_loaders",
         "documentation": {}
     },
     {
         "label": "DirectoryLoader",
-        "importPath": "langchain.document_loaders",
-        "description": "langchain.document_loaders",
+        "importPath": "langchain_community.document_loaders",
+        "description": "langchain_community.document_loaders",
         "isExtraImport": true,
-        "detail": "langchain.document_loaders",
+        "detail": "langchain_community.document_loaders",
+        "documentation": {}
+    },
+    {
+        "label": "PyPDFLoader",
+        "importPath": "langchain_community.document_loaders",
+        "description": "langchain_community.document_loaders",
+        "isExtraImport": true,
+        "detail": "langchain_community.document_loaders",
+        "documentation": {}
+    },
+    {
+        "label": "DirectoryLoader",
+        "importPath": "langchain_community.document_loaders",
+        "description": "langchain_community.document_loaders",
+        "isExtraImport": true,
+        "detail": "langchain_community.document_loaders",
         "documentation": {}
     },
     {
@@ -395,22 +411,6 @@
         "description": "pinecone",
         "isExtraImport": true,
         "detail": "pinecone",
-        "documentation": {}
-    },
-    {
-        "label": "PyPDFLoader",
-        "importPath": "langchain_community.document_loaders",
-        "description": "langchain_community.document_loaders",
-        "isExtraImport": true,
-        "detail": "langchain_community.document_loaders",
-        "documentation": {}
-    },
-    {
-        "label": "DirectoryLoader",
-        "importPath": "langchain_community.document_loaders",
-        "description": "langchain_community.document_loaders",
-        "isExtraImport": true,
-        "detail": "langchain_community.document_loaders",
         "documentation": {}
     },
     {

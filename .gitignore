@@ -140,6 +140,9 @@ celerybeat.pid
 # Environments
 .env
 .envrc
+.pem
+medicalchatbot.pem
+medical-chatbot_accessKeys.csv
 .venv
 env/
 venv/
