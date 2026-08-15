@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+</head>
+<body>
+    <nav class="site-nav">
+        <a class="brand" href="{{ url_for('index') }}">Medical Care</a>
+        <div class="nav-links"><button id="aboutButton" type="button">About</button><a href="{{ url_for('index') }}">Chat settings</a></div>
+    </nav>
+
+    <main class="landing" id="about">
+        <section class="welcome-copy">
+            <p class="eyebrow">Personal health information</p>
+            <h1>Health questions,<br><em>answered gently.</em></h1>
+            <p>Get clear, evidence-based health information in a calm private chat. This assistant supports—not replaces—your healthcare professional.</p>
+        </section>
+
+        <section class="chat-panel" id="chat" aria-label="Medical chat">
+            <header class="chat-header">
+                <div class="assistant-profile"><img src="{{ url_for('static', filename='images/avatars/avatar1.jpg') }}" alt="Medical Chatbot"><span class="online-dot"></span></div>
+                <div><h2>Medical Chatbot</h2><p>Here to help with health questions</p></div>
+                <a class="settings-link" href="{{ url_for('index') }}" title="Chat settings"><i class="fas fa-cog"></i></a>
+            </header>
+            <div id="messages" class="messages" aria-live="polite">
+                <div class="message-row assistant-message">
+                    <img src="{{ url_for('static', filename='images/avatars/avatar1.jpg') }}" alt="Medical Chatbot">
+                    <div><div class="bubble">Good morning, {{ user_name }}. I’m here to help with general health questions. What would you like to know?</div><time></time></div>
+                </div>
+            </div>
+            <footer class="chat-input-area">
+                <form id="messageForm">
+                    <input id="messageInput" type="text" autocomplete="off" placeholder="Type your message..." required>
+                    <button type="submit" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </footer>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>All Rights Reserved. © 2025 <strong>Medical Chatbot</strong> · Developed and designed by <strong>Mohamed Said</strong></p>
+    </footer>
+
+    <div id="aboutModal" class="about-modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-hidden="true">
+        <div class="about-dialog">
+            <button id="closeAbout" class="close-about" type="button" aria-label="Close about dialog"><i class="fas fa-times"></i></button>
+            <p class="about-label">About this application</p>
+            <h2 id="aboutTitle">Medical Chatbot</h2>
+            <p class="about-project">Medical Chatbot is a retrieval-augmented AI assistant created to make general health information easier to understand. It turns medical reference content into clear, structured, patient-friendly responses with direct answers, explanations, key points, and guidance on when to seek care.</p>
+            <p>Each answer is grounded in relevant material retrieved from the application’s medical knowledge base, while conversation memory keeps follow-up questions in context. Your name and chosen avatar create a separate browser session, distinct from other users. This application is for education and general guidance only—it does not diagnose conditions, replace a clinician, or provide emergency care.</p>
+            <div class="about-divider"></div>
+            <h3>Mohamed Mohamed Said Aly</h3>
+            <p class="about-role">Agentic AI Engineer · Applied AI Engineer · LLM Systems Engineer</p>
+            <p>Seasoned Agentic AI and Software Engineer with 25 years of multinational experience and 3 years of dedicated AI experience. Holds a dual-award MSc in Artificial Intelligence with Distinction (CGPA 3.91) and has lived in Malaysia for 10 years.</p>
+            <p>Specialises in Agentic AI, Generative AI, multi-agent applications, tool-using systems, RAG pipelines, and production-ready LLM backends using Python, LangGraph, MCP, FastAPI, Groq, and PostgreSQL. His work also covers multimodal AI, computer vision, NLP, hybrid retrieval, vector stores, context engineering, QLoRA, PEFT, Hugging Face Transformers, guardrails, and human-in-the-loop workflows.</p>
+            <div class="profile-links">
+                <a href="https://mohamedsaid-portfolio.vercel.app" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> AI Portfolio</a>
+                <a href="https://github.com/msaid1976" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://huggingface.co/msaid1976" target="_blank" rel="noopener noreferrer"><i class="fas fa-robot"></i> Hugging Face</a>
+                <a href="https://linkedin.com/in/mohamedsaidaly" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userName = {{ user_name | tojson }};
+        const userAvatar = {{ user_avatar | tojson }};
+        const botAvatar = {{ url_for('static', filename='images/avatars/avatar1.jpg') | tojson }};
+        const messages = document.getElementById("messages");
+        const form = document.getElementById("messageForm");
+        const input = document.getElementById("messageInput");
+        const aboutModal = document.getElementById("aboutModal");
+
+        document.getElementById("aboutButton").addEventListener("click", function() {
+            aboutModal.classList.add("is-open");
+            aboutModal.setAttribute("aria-hidden", "false");
+            document.getElementById("closeAbout").focus();
+        });
+        function closeAboutModal() {
+            aboutModal.classList.remove("is-open");
+            aboutModal.setAttribute("aria-hidden", "true");
+            document.getElementById("aboutButton").focus();
+        }
+        document.getElementById("closeAbout").addEventListener("click", closeAboutModal);
+        aboutModal.addEventListener("click", function(event) { if (event.target === aboutModal) closeAboutModal(); });
+        document.addEventListener("keydown", function(event) { if (event.key === "Escape" && aboutModal.classList.contains("is-open")) closeAboutModal(); });
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const message = input.value.trim();
+            if (!message) return;
+            appendUserMessage(message);
+            input.value = "";
+            input.focus();
+            const loading = appendLoadingMessage();
+
+            try {
+                const response = await fetch("{{ url_for('chat') }}", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ msg: message }) });
+                const answer = await response.text();
+                loading.remove();
+                if (!response.ok) throw new Error(answer || "Unable to get a response.");
+                appendAssistantMessage(answer);
+            } catch (error) {
+                loading.remove();
+                appendAssistantMessage("I’m sorry, something went wrong. Please try again.");
+            }
+        });
+
+        function getTime() { return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }
+        function scrollMessages() { messages.scrollTop = messages.scrollHeight; }
+        function appendUserMessage(message) {
+            const row = document.createElement("div"); row.className = "message-row user-message";
+            row.innerHTML = '<div><div class="bubble"></div><time>' + getTime() + '</time></div><img src="' + escapeAttribute(userAvatar) + '" alt="' + escapeAttribute(userName) + '">';
+            row.querySelector(".bubble").textContent = message;
+            messages.appendChild(row); scrollMessages();
+        }
+        function appendLoadingMessage() {
+            const row = document.createElement("div"); row.className = "message-row assistant-message loading-message";
+            row.innerHTML = '<img src="' + escapeAttribute(botAvatar) + '" alt="Medical Chatbot"><div class="bubble"><span></span><span></span><span></span></div>';
+            messages.appendChild(row); scrollMessages(); return row;
+        }
+        function appendAssistantMessage(answer) {
+            const row = document.createElement("div"); row.className = "message-row assistant-message";
+            row.innerHTML = '<img src="' + escapeAttribute(botAvatar) + '" alt="Medical Chatbot"><div><div class="bubble markdown-response">' + formatMarkdown(answer) + '</div><time>' + getTime() + '</time></div>';
+            messages.appendChild(row); scrollMessages();
+        }
+        function escapeHtml(value) { const node = document.createElement("div"); node.textContent = String(value); return node.innerHTML; }
+        function escapeAttribute(value) { return escapeHtml(value).replace(/"/g, "&quot;"); }
+        function formatMarkdown(value) {
+            const normalized = String(value).replace(/\s*\*\*(Answer|Explanation|Key points|When to seek care|Disclaimer)\*\*\s*/gi, "\n**$1**\n").replace(/\s+-\s+(?=[A-Z])/g, "\n- ").trim();
+            let html = "", inList = false;
+            escapeHtml(normalized).split(/\r?\n/).forEach(function(line) {
+                const bullet = line.match(/^\s*-\s+(.+)$/), heading = line.match(/^\*\*(.+?)\*\*\s*$/);
+                if (bullet) { if (!inList) { html += "<ul>"; inList = true; } html += "<li>" + inlineMarkdown(bullet[1]) + "</li>"; return; }
+                if (inList) { html += "</ul>"; inList = false; }
+                if (line.trim()) html += heading ? '<h3>' + heading[1] + '</h3>' : '<p>' + inlineMarkdown(line) + '</p>';
+            });
+            return html + (inList ? "</ul>" : "");
+        }
+        function inlineMarkdown(value) { return value.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>"); }
+    </script>
+</body>
+</html>

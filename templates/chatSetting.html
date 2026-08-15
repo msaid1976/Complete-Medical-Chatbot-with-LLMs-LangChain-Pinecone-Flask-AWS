@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat settings | Medical Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat-settings.css') }}">
+</head>
+<body class="settings-page">
+    <main class="settings-card">
+        {% if has_saved_settings %}
+        <a class="close-settings" href="{{ url_for('chat_page') }}" aria-label="Close settings and return to chat"><i class="fas fa-times"></i></a>
+        {% endif %}
+        <div class="settings-brand">
+            <img src="{{ url_for('static', filename='images/avatars/avatar1.jpg') }}" alt="Medical Chatbot">
+            <span>Medical Chatbot</span>
+        </div>
+        <h1>Your Chat Settings</h1>
+        <p class="settings-intro">Set your name and choose an avatar before starting a private medical chat.</p>
+
+        <form method="POST" action="{{ url_for('start_session') }}">
+            <label for="userName">Please choose your name</label>
+            <input id="userName" name="name" type="text" maxlength="50" autocomplete="name" value="{{ user_name }}" placeholder="Enter your name" required>
+
+            <fieldset>
+                <legend>Please select your avatar</legend>
+                <div class="avatar-list">
+                    {% for avatar in avatars %}
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="{{ avatar }}" {% if avatar == user_avatar %}checked{% endif %}>
+                        <img src="{{ url_for('static', filename='images/avatars/' + avatar) }}" alt="Avatar {{ loop.index }}">
+                    </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            <p class="settings-error" aria-live="polite">{{ error | default('') }}</p>
+            <div class="settings-footer">
+                <button type="submit">Save settings <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

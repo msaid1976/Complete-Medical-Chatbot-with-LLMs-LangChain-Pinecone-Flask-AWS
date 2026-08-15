@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Custom styles for the modal */
+    .modal {
+      display: none;
+    }
+
+    /* Style for selected avatar */
+    .avatar-selected {
+      border: 2px solid #3B82F6; /* Blue border color */
+      border-radius: 50%;
+    }
+
+    /* Style for selected avatar name */
+    .avatar-selected-name {
+      color: blue; /* Set color to blue */
+    }
+  </style>
+</head>
+<body>
+  <button id="openModal" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Open Modal</button>
+
+  <!-- This example requires Tailwind CSS v3.0+ -->
+  <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" id="myModal">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <!--
+        Background overlay, show/hide based on modal state.
+
+        Entering: "ease-out duration-300"
+          From: "opacity-0"
+          To: "opacity-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100"
+          To: "opacity-0"
+      -->
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+      <!-- This element is to trick the browser into centering the modal contents. -->
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+      <!--
+        Modal panel, show/hide based on modal state.
+
+        Entering: "ease-out duration-300"
+          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          To: "opacity-100 translate-y-0 sm:scale-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100 translate-y-0 sm:scale-100"
+          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+      -->
+      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="flex items-start">
+            <!-- Image and text container -->
+            <div class="flex items-center flex-grow">
+              <!-- Replace the SVG icon with an img tag -->
+              <img class="h-16 w-16 rounded-full" src="static/Images/Oud.jpg" alt="Avatar Image">
+              <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title"><b>Chatbot Settings</b></h3>
+            </div>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">
+                <p id="greeting"></p>
+
+                <br/>
+                <label for="username" id="usernameLabel">Please choose your name:</label>
+                <input type="text" id="username" name="username" class="mt-1 p-2 border border-gray-300 block w-full rounded-md">
+              </p>
+            </div>
+            <br/>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">
+                Please Select Your Avatar:
+              </p>
+              <div id="avatarOptions" class="mt-2 flex flex-wrap justify-center"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button id="saveSettings" type="button" class="select-none rounded-lg bg-green-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("openModal");
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function () {
+      modal.style.display = "block";
+      greetUser(); // Call function to greet user
+    }
+
+    // Function to greet user based on current time and username
+    function greetUser() {
+      var today = new Date();
+      var hour = today.getHours();
+      var greeting;
+      var username = sessionStorage.getItem("username");
+      var usernameLabel = document.getElementById("usernameLabel");
+      if (username) {
+        usernameLabel.textContent = "Please modify your name"; // Change label text
+        document.getElementById("greeting").innerHTML = "Hello, " + username + "!"; // Greet with username if available
+      } else {
+        usernameLabel.textContent = "Please choose your name"; // Change label text
+        if (hour < 12) {
+          greeting = "Good morning";
+        } else if (hour < 18) {
+          greeting = "Good afternoon";
+        } else {
+          greeting = "Good evening";
+        }
+        document.getElementById("greeting").innerHTML = greeting;
+      }
+
+      var avatar = sessionStorage.getItem("avatar");
+      if (avatar) {
+        // Highlight selected avatar if available
+        var selectedAvatar = document.querySelector('img[value="' + avatar + '"]');
+        if (selectedAvatar) {
+          var allAvatars = document.querySelectorAll('.avatar');
+          allAvatars.forEach(function(avatar) {
+            avatar.classList.remove('avatar-selected');
+          });
+          var allAvatarNames = document.querySelectorAll('.avatar-name');
+          allAvatarNames.forEach(function(name) {
+            name.classList.remove('avatar-selected-name');
+          });
+          selectedAvatar.classList.add('avatar-selected');
+          selectedAvatar.nextElementSibling.classList.add('avatar-selected-name');
+        }
+      }
+    }
+
+    // Function to add avatar options dynamically
+    function addAvatarOptions() {
+      var avatarOptionsDiv = document.getElementById('avatarOptions');
+      // Array of avatar image URLs and names
+      var avatars = [
+        { url: "static/Images/avatars/avatar1.jpg", name: "Dr Vino" },
+        { url: "static/Images/avatars/avatar2.jpg", name: "Mohamed" },
+        { url: "static/Images/avatars/avatar3.jpg", name: "Tarmini" },
+        { url: "static/Images/avatars/avatar4.jpg", name: "Henry Chai" },
+        { url: "static/Images/avatars/avatar5.jpg", name: "Wong yee" }
+      ];
+      avatars.forEach(function (avatar, index) {
+        var div = document.createElement('div');
+        div.classList.add('avatar-option', 'flex', 'flex-col', 'items-center', 'mx-2', 'mb-4', 'cursor-pointer', 'select-none'); // Added flex layout and margin bottom
+        var img = document.createElement('img');
+        img.src = avatar.url;
+        img.alt = 'Avatar';
+        img.classList.add('avatar', 'w-16', 'h-16', 'rounded-full', 'mb-2', 'border', 'border-transparent', 'hover:border-blue-400');
+        
+        div.appendChild(img);
+        
+        // Add avatar name
+        var p = document.createElement('p');
+        p.textContent = avatar.name;
+        p.classList.add('avatar-name', 'text-sm', 'text-gray-700');
+        div.appendChild(p);
+
+        // Add event listener to handle selection when clicking avatar image or name
+        div.addEventListener('click', function() {
+          var allAvatars = document.querySelectorAll('.avatar');
+          allAvatars.forEach(function(avatar) {
+            avatar.classList.remove('avatar-selected');
+            avatar.classList.remove('border-blue-400');
+          });
+          var allAvatarNames = document.querySelectorAll('.avatar-name');
+          allAvatarNames.forEach(function(name) {
+            name.classList.remove('avatar-selected-name');
+            name.classList.remove('text-blue-500');
+          });
+          img.classList.add('avatar-selected');
+          img.classList.add('border-blue-400');
+          p.classList.add('avatar-selected-name');
+          p.classList.add('text-blue-500');
+        });
+
+        avatarOptionsDiv.appendChild(div);
+      });
+    }
+
+    // Call the function to add avatar options
+    addAvatarOptions();
+
+    // Function to save user settings
+    document.getElementById("saveSettings").onclick = function () {
+      var username = document.getElementById("username").value;
+      var selectedAvatar = document.querySelector('.avatar-selected');
+
+      if (username && selectedAvatar) {
+        // Save settings in session storage
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("avatar", selectedAvatar.nextElementSibling.textContent);
+        // Close the modal
+        modal.style.display = "none";
+      } else {
+        alert("Please enter your name and select an avatar.");
+      }
+    };
+  </script>
+</body>
+</html>
