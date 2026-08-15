@@ -71,14 +71,14 @@ git clone https://github.com/msaid1976/Complete-Medical-Chatbot-with-LLMs-LangCh
 cd Complete-Medical-Chatbot-with-LLMs-LangChain-Pinecone-Flask-AWS
 ```
 
-Create and activate a virtual environment:
+Install Python 3.12 with `uv` if it is not already available, then create the project virtual environment from `pyproject.toml`:
 
 ```bash
-conda create -n medibot python=3.12 -y
-conda activate medibot
+uv python install 3.12
+uv sync --python 3.12
 ```
 
-Install dependencies:
+The `.python-version` file and `pyproject.toml` both pin the project to Python 3.12. `uv sync` creates and manages a local `.venv` directory using that version. Then install the project requirements into that environment:
 
 ```bash
 uv pip install -r requirements.txt
