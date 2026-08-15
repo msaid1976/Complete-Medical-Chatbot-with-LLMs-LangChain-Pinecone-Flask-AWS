@@ -115,19 +115,93 @@ Then visit [http://127.0.0.1:8080](http://127.0.0.1:8080).
 - Hugging Face sentence-transformer embeddings
 - HTML, CSS, and vanilla JavaScript
 
-## Deployment notes
+## AWS CI/CD deployment with GitHub Actions
 
-For a container/AWS deployment, provide these environment variables through the deployment platform's secret manager:
+The repository includes a GitHub Actions workflow at `.github/workflows/cicd.yaml`. It builds a Docker image, pushes it to Amazon ECR, and deploys it to an EC2 machine configured as a self-hosted GitHub Actions runner.
 
-- `PINECONE_API_KEY`
-- `GROQ_API_KEY`
-- `FLASK_SECRET_KEY`
+### 1. Sign in to AWS
+
+Sign in to the [AWS Console](https://aws.amazon.com/console/).
+
+### 2. Create an IAM user for deployment
+
+Create an IAM user with programmatic access for the GitHub Actions workflow. The deployment needs access to:
+
+- **Amazon EC2** — runs the self-hosted GitHub Actions runner and Docker container.
+- **Amazon ECR** — stores the Docker image.
+
+For this project’s initial setup, attach the following policies:
+
+- `AmazonEC2ContainerRegistryFullAccess`
+- `AmazonEC2FullAccess`
+
+For production, replace broad managed policies with a least-privilege IAM policy scoped to the required ECR repository and EC2 resources.
+
+### 3. Create an Amazon ECR repository
+
+Create an ECR repository to store the Docker image. Save its repository URI; for example:
+
+```text
+315865595366.dkr.ecr.us-east-1.amazonaws.com/medicalbot
+```
+
+Use the repository name portion (for example, `medicalbot`) as the value for the `ECR_REPO` GitHub secret.
+
+### 4. Create an Ubuntu EC2 instance
+
+Launch an Ubuntu EC2 instance. This machine will host the self-hosted GitHub Actions runner and run the Docker image after deployment.
+
+Ensure the instance security group allows inbound traffic on port `8080` if you want to access the Flask application directly.
+
+### 5. Install Docker on the EC2 instance
+
+Connect to the EC2 instance and run:
+
+```bash
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
+
+### 6. Configure the EC2 instance as a self-hosted runner
+
+In your GitHub repository, go to:
+
+```text
+Settings → Actions → Runners → New self-hosted runner
+```
+
+Choose Linux and follow the generated commands on the EC2 instance. Once the runner is online, the deployment job can run Docker commands on that server.
+
+### 7. Add GitHub Actions secrets
+
+In the repository, go to **Settings → Secrets and variables → Actions** and add:
+
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_DEFAULT_REGION`
 - `ECR_REPO`
+- `PINECONE_API_KEY`
+- `GROQ_API_KEY`
+- `FLASK_SECRET_KEY`
 
-Use a persistent shared store such as Redis for conversation history when running more than one Flask worker or container.
+> The current chatbot uses Groq, so configure `GROQ_API_KEY` rather than `OPENAI_API_KEY` for the application container.
+
+### Deployment flow
+
+On every push to `main`, GitHub Actions performs these steps:
+
+1. Builds the Docker image from the source code.
+2. Authenticates with Amazon ECR.
+3. Pushes the tagged image to the ECR repository.
+4. Runs the deployment job on the EC2 self-hosted runner.
+5. Pulls and starts the application container on port `8080`.
+
+For a multi-container or multi-instance deployment, use a persistent shared store such as Redis for conversation history instead of the current in-memory store.
 
 ## Author
 
